@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XLA Network Status</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Scala (XLA) Network Status</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Block Height</div>
+                <div class="stat-value" id="height">---</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Difficulty</div>
+                <div class="stat-value" id="difficulty">---</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Network Hashrate</div>
+                <div class="stat-value" id="hashrate">---</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Circulating Supply</div>
+                <div class="stat-value" id="supply">---</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Supply</div>
+                <div class="stat-value" id="total">---</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Last Updated</div>
+                <div class="stat-value" id="updated">---</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="difficultyChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="hashrateChart"></canvas>
+        </div>
+
+        <div class="footer">
+            <a href="https://explorer.scalaproject.io">Explorer</a> |
+            <a href="https://emission.scala.network">Emission</a> |
+            <a href="https://github.com/post-hum/xla-network-status">GitHub</a>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

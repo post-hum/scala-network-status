@@ -18,10 +18,7 @@ jobs:
         
       - name: Fetch and save data
         run: |
-          # Fetch pool stats
           curl -s https://pool.scalaproject.io/api/stats > current.json
-          
-          # Update history
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           DIFFICULTY=$(jq '.network.difficulty' current.json)
           HEIGHT=$(jq '.network.height' current.json)
@@ -36,10 +33,15 @@ jobs:
           fi
           mv data/tmp.json data/history.json
           
-      - name: Commit and push
+      - name: Commit data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add current.json data/history.json
-          git diff --staged --quiet || git commit -m "Auto-update network data"
+          git diff --staged --quiet || git commit -m "Update network data"
+          
+      - name: Trigger Pages rebuild
+        run: |
+          # Пустой коммит для триггера Pages
+          git commit --allow-empty -m "Trigger Pages rebuild [skip ci]" || true
           git push

@@ -7,227 +7,84 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         @import url('https://fonts.cdnfonts.com/css/inter');
-        
         :root {
-            --bg-primary: #05070c;
-            --bg-card: rgba(14, 18, 26, 0.65);
-            --bg-card-hover: rgba(18, 24, 36, 0.8);
-            --border: rgba(255,255,255,0.08);
-            --border-hover: rgba(59, 130, 246, 0.4);
-            --accent: #3b82f6;
-            --accent-light: #60a5fa;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --text-primary: #e8ecf1;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --gradient-1: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            --gradient-2: linear-gradient(135deg, #10b981, #3b82f6);
-            --shadow: 0 4px 24px rgba(0,0,0,0.4);
-            --shadow-hover: 0 8px 32px rgba(59, 130, 246, 0.15);
-            --radius: 16px;
+            --bg-primary: #05070c; --bg-card: rgba(14, 18, 26, 0.65); --bg-card-hover: rgba(18, 24, 36, 0.8);
+            --border: rgba(255,255,255,0.08); --border-hover: rgba(59, 130, 246, 0.4);
+            --accent: #3b82f6; --accent-light: #60a5fa; --success: #10b981; --warning: #f59e0b;
+            --text-primary: #e8ecf1; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --gradient-1: linear-gradient(135deg, #3b82f6, #8b5cf6); --gradient-2: linear-gradient(135deg, #10b981, #3b82f6);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4); --shadow-hover: 0 8px 32px rgba(59, 130, 246, 0.15); --radius: 16px;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-            line-height: 1.5;
-        }
-
-        /* Animated Background */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.35;
-            z-index: 0;
-            pointer-events: none;
-            animation: float 18s infinite alternate ease-in-out;
-        }
-        .bg-orb-1 { width: 600px; height: 600px; background: #3b82f6; top: -15%; left: -10%; animation-delay: 0s; }
+        * { box-sizing: border-box; margin: 0; padding: 0; } html { scroll-behavior: smooth; }
+        body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Inter', system-ui, -apple-system, sans-serif; min-height: 100vh; overflow-x: hidden; line-height: 1.5; }
+        .bg-orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.35; z-index: 0; pointer-events: none; animation: float 18s infinite alternate ease-in-out; }
+        .bg-orb-1 { width: 600px; height: 600px; background: #3b82f6; top: -15%; left: -10%; }
         .bg-orb-2 { width: 500px; height: 500px; background: #8b5cf6; bottom: -10%; right: -5%; animation-delay: -6s; }
         .bg-orb-3 { width: 400px; height: 400px; background: #10b981; top: 40%; left: 60%; animation-delay: -12s; }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(40px, -30px) scale(1.1); }
-            100% { transform: translate(-20px, 20px) scale(0.95); }
-        }
-
-        .container {
-            position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 32px 20px 60px;
-        }
-
-        /* Typography & Header */
+        @keyframes float { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-30px) scale(1.1); } 100% { transform: translate(-20px,20px) scale(0.95); } }
+        .container { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 32px 20px 60px; }
         header { text-align: center; margin-bottom: 48px; animation: fadeDown 0.7s ease-out; }
-        header h1 {
-            font-size: 2.4rem; font-weight: 800; background: var(--gradient-1);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            margin-bottom: 8px; letter-spacing: -0.5px;
-            text-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
-        }
-        header p { color: var(--text-secondary); font-size: 0.95rem; font-weight: 400; }
-        .live-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--success); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
-            margin-top: 8px;
-        }
+        header h1 { font-size: 2.4rem; font-weight: 800; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; letter-spacing: -0.5px; text-shadow: 0 0 40px rgba(59,130,246,0.3); }
+        header p { color: var(--text-secondary); font-size: 0.95rem; }
+        .live-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--success); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-top: 8px; }
         .pulse { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
-
-        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 50% { box-shadow: 0 0 0 6px transparent; } }
-        @keyframes fadeDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Cards */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-bottom: 40px;
-        }
-        .stat-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 20px; backdrop-filter: blur(12px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: fadeUp 0.6s ease-out backwards; box-shadow: var(--shadow);
-        }
-        .stat-card:nth-child(1){animation-delay:0.05s} .stat-card:nth-child(2){animation-delay:0.1s}
-        .stat-card:nth-child(3){animation-delay:0.15s} .stat-card:nth-child(4){animation-delay:0.2s}
-        .stat-card:nth-child(5){animation-delay:0.25s} .stat-card:nth-child(6){animation-delay:0.3s}
-
-        .stat-card:hover {
-            border-color: var(--border-hover); background: var(--bg-card-hover);
-            transform: translateY(-3px); box-shadow: var(--shadow-hover);
-        }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 50% { box-shadow: 0 0 0 6px transparent; } }
+        @keyframes fadeDown { from { opacity:0; transform:translateY(-15px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-bottom: 40px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; backdrop-filter: blur(12px); transition: all 0.3s cubic-bezier(0.4,0,0.2,1); animation: fadeUp 0.6s ease-out backwards; box-shadow: var(--shadow); }
+        .stat-card:nth-child(1){animation-delay:0.05s} .stat-card:nth-child(2){animation-delay:0.1s} .stat-card:nth-child(3){animation-delay:0.15s} .stat-card:nth-child(4){animation-delay:0.2s} .stat-card:nth-child(5){animation-delay:0.25s} .stat-card:nth-child(6){animation-delay:0.3s}
+        .stat-card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
         .stat-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; font-size: 1.2rem; background: rgba(255,255,255,0.05); }
-        .stat-icon.blue { color: var(--accent-light); background: rgba(59,130,246,0.15); }
-        .stat-icon.green { color: var(--success); background: rgba(16,185,129,0.15); }
-        .stat-icon.purple { color: #a78bfa; background: rgba(139,92,246,0.15); }
-        .stat-icon.orange { color: var(--warning); background: rgba(245,158,11,0.15); }
-
+        .stat-icon.blue { color: var(--accent-light); background: rgba(59,130,246,0.15); } .stat-icon.green { color: var(--success); background: rgba(16,185,129,0.15); } .stat-icon.purple { color: #a78bfa; background: rgba(139,92,246,0.15); } .stat-icon.orange { color: var(--warning); background: rgba(245,158,11,0.15); }
         .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
         .stat-value { font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text-primary); word-break: break-all; }
-
-        /* Calculator */
-        .calc-section {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
-            padding: 28px; margin-bottom: 40px; backdrop-filter: blur(12px); box-shadow: var(--shadow);
-            animation: fadeUp 0.7s ease-out 0.3s backwards;
-        }
+        .calc-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; margin-bottom: 40px; backdrop-filter: blur(12px); box-shadow: var(--shadow); animation: fadeUp 0.7s ease-out 0.3s backwards; }
         .calc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .calc-title { font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .calc-title::before { content: ''; width: 4px; height: 18px; background: var(--gradient-1); border-radius: 2px; }
-        .reward-badge {
-            background: rgba(255,255,255,0.06); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px;
-            font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;
-        }
-        .reward-badge strong { color: var(--accent-light); }
-
+        .calc-title { font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 10px; } .calc-title::before { content: ''; width: 4px; height: 18px; background: var(--gradient-1); border-radius: 2px; }
+        .reward-badge { background: rgba(255,255,255,0.06); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; } .reward-badge strong { color: var(--accent-light); }
         .calc-body { display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px; align-items: start; }
         .calc-input-group label { display: block; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
         .input-wrap { display: flex; gap: 10px; }
-        .input-wrap input {
-            flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-primary);
-            padding: 12px 14px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; font-variant-numeric: tabular-nums;
-            outline: none; transition: 0.25s;
-        }
+        .input-wrap input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-primary); padding: 12px 14px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; font-variant-numeric: tabular-nums; outline: none; transition: 0.25s; }
         .input-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
-        .input-wrap select {
-            background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-primary);
-            padding: 12px 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; outline: none; min-width: 85px; transition: 0.25s;
-        }
-        .input-wrap select:focus { border-color: var(--accent); }
-        .input-wrap select option { background: #111827; }
-
+        .input-wrap select { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-primary); padding: 12px 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; outline: none; min-width: 85px; transition: 0.25s; }
+        .input-wrap select:focus { border-color: var(--accent); } .input-wrap select option { background: #111827; }
         .calc-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .res-card {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center;
-            transition: 0.3s; position: relative; overflow: hidden;
-        }
+        .res-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
         .res-card:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.05); }
         .res-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
-        .res-value {
-            font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums;
-            background: var(--gradient-2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            margin-bottom: 2px;
-        }
+        .res-value { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; background: var(--gradient-2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 2px; }
         .res-unit { font-size: 0.7rem; color: var(--text-secondary); }
-
         .calc-footer { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-
-        /* Charts */
         .charts-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .chart-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; backdrop-filter: blur(12px);
-            box-shadow: var(--shadow); animation: fadeUp 0.7s ease-out 0.4s backwards;
-        }
-        .chart-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
-        .chart-card h3::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+        .chart-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; backdrop-filter: blur(12px); box-shadow: var(--shadow); animation: fadeUp 0.7s ease-out 0.4s backwards; }
+        .chart-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px; } .chart-card h3::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
         .chart-container { position: relative; width: 100%; }
-
-        /* Blocks */
-        .blocks-section {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; margin-bottom: 40px;
-            backdrop-filter: blur(12px); box-shadow: var(--shadow); animation: fadeUp 0.7s ease-out 0.5s backwards;
-        }
-        .blocks-section h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 18px; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
-        .blocks-section h3::before { content: ''; width: 4px; height: 18px; background: var(--gradient-2); border-radius: 2px; }
+        .blocks-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; margin-bottom: 40px; backdrop-filter: blur(12px); box-shadow: var(--shadow); animation: fadeUp 0.7s ease-out 0.5s backwards; }
+        .blocks-section h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 18px; color: var(--text-primary); display: flex; align-items: center; gap: 10px; } .blocks-section h3::before { content: ''; width: 4px; height: 18px; background: var(--gradient-2); border-radius: 2px; }
         .blocks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
-        .block-day {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; text-align: center;
-            transition: 0.2s; position: relative; overflow: hidden;
-        }
+        .block-day { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; text-align: center; transition: 0.2s; position: relative; overflow: hidden; }
         .block-day:hover { border-color: var(--border-hover); transform: translateY(-2px); background: rgba(255,255,255,0.04); }
         .block-date { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 6px; }
         .block-count { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
         .block-bar { height: 3px; background: var(--gradient-1); border-radius: 2px; margin-top: 6px; width: 0%; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
-
-        /* Footer */
         footer { text-align: center; padding: 24px 0 10px; border-top: 1px solid var(--border); }
         footer a { color: var(--accent-light); text-decoration: none; margin: 0 16px; font-size: 0.85rem; transition: 0.2s; position: relative; }
-        footer a:hover { color: var(--text-primary); }
-        footer a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: currentColor; transition: 0.2s; }
-        footer a:hover::after { width: 100%; }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container { padding: 20px 14px 50px; }
-            header h1 { font-size: 1.8rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .stat-value { font-size: 1.1rem; }
-            .calc-body { grid-template-columns: 1fr; }
-            .calc-results { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-            .res-value { font-size: 1.2rem; }
-            .charts-wrapper { grid-template-columns: 1fr; }
-            .blocks-grid { grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); }
-        }
-        @media (max-width: 480px) {
-            .calc-results { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr; }
-        }
+        footer a:hover { color: var(--text-primary); } footer a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: currentColor; transition: 0.2s; } footer a:hover::after { width: 100%; }
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        @media (max-width: 768px) { .container { padding: 20px 14px 50px; } header h1 { font-size: 1.8rem; } .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } .stat-value { font-size: 1.1rem; } .calc-body { grid-template-columns: 1fr; } .calc-results { grid-template-columns: repeat(3, 1fr); gap: 10px; } .res-value { font-size: 1.2rem; } .charts-wrapper { grid-template-columns: 1fr; } .blocks-grid { grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); } }
+        @media (max-width: 480px) { .calc-results { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
-
+    <div class="bg-orb bg-orb-1"></div><div class="bg-orb bg-orb-2"></div><div class="bg-orb bg-orb-3"></div>
     <div class="container">
         <header>
             <h1>Scala Network Status</h1>
             <p>Real-time monitoring & mining profitability</p>
             <div class="live-badge"><span class="pulse"></span> Live • Auto-refresh 10m</div>
         </header>
-
         <div class="stats-grid">
             <div class="stat-card"><div class="stat-icon blue">▧</div><div class="stat-label">Block Height</div><div class="stat-value" id="height">---</div></div>
             <div class="stat-card"><div class="stat-icon purple">◆</div><div class="stat-label">Difficulty</div><div class="stat-value" id="difficulty">---</div></div>
@@ -236,7 +93,6 @@
             <div class="stat-card"><div class="stat-icon blue">⬡</div><div class="stat-label">Total Supply</div><div class="stat-value" id="total">---</div></div>
             <div class="stat-card"><div class="stat-icon green">◷</div><div class="stat-label">Last Updated</div><div class="stat-value" id="updated" style="font-size:0.9rem;">---</div></div>
         </div>
-
         <div class="calc-section">
             <div class="calc-header">
                 <div class="calc-title">Mining Calculator</div>
@@ -248,10 +104,7 @@
                     <div class="input-wrap">
                         <input type="number" id="hashrateInput" value="1000" step="any" min="0">
                         <select id="hashrateUnit">
-                            <option value="h">H/s</option>
-                            <option value="kh" selected>KH/s</option>
-                            <option value="mh">MH/s</option>
-                            <option value="gh">GH/s</option>
+                            <option value="h">H/s</option><option value="kh" selected>KH/s</option><option value="mh">MH/s</option><option value="gh">GH/s</option>
                         </select>
                     </div>
                 </div>
@@ -266,23 +119,14 @@
                 <span style="opacity:0.7;">PPLNS / SOLO compatible</span>
             </div>
         </div>
-
         <div class="charts-wrapper">
-            <div class="chart-card">
-                <h3>Network Difficulty</h3>
-                <div class="chart-container"><canvas id="difficultyChart"></canvas></div>
-            </div>
-            <div class="chart-card">
-                <h3>Network Hashrate</h3>
-                <div class="chart-container"><canvas id="hashrateChart"></canvas></div>
-            </div>
+            <div class="chart-card"><h3>Network Difficulty</h3><div class="chart-container"><canvas id="difficultyChart"></canvas></div></div>
+            <div class="chart-card"><h3>Network Hashrate</h3><div class="chart-container"><canvas id="hashrateChart"></canvas></div></div>
         </div>
-
         <div class="blocks-section">
             <h3>Blocks Per Day</h3>
             <div id="blocksGrid" class="blocks-grid"><div style="grid-column:1/-1;text-align:center;color:var(--text-muted);">Loading history...</div></div>
         </div>
-
         <footer>
             <a href="https://explorer.scalaproject.io" target="_blank">Explorer</a>
             <a href="https://emission.scala.network" target="_blank">Emission</a>
@@ -298,24 +142,19 @@
             try {
                 const [poolRes, emitRes] = await Promise.all([fetch('current.json'), fetch('emission.json')]);
                 const pool = await poolRes.json(), emit = await emitRes.json();
-
                 const height = pool.network?.height || emit.height || 'N/A';
                 const diffRaw = pool.network?.difficulty || 0;
                 currentDifficulty = diffRaw;
-                
-                // Dynamic block reward
                 const rawReward = pool.pool?.stats?.lastblock_lastReward || 0;
                 const denom = pool.config?.denominationUnit || 100;
                 currentReward = parseFloat(rawReward) / denom;
                 document.getElementById('blockRewardDisplay').textContent = currentReward.toFixed(2) + ' XLA';
-
                 document.getElementById('height').textContent = Number(height).toLocaleString();
                 document.getElementById('difficulty').textContent = diffRaw ? (diffRaw / 1e9).toFixed(2) + ' G' : 'N/A';
                 document.getElementById('hashrate').textContent = diffRaw ? ((diffRaw / 120) / 1e6).toFixed(2) + ' MH/s' : 'N/A';
                 document.getElementById('supply').textContent = emit.circulatingSupply ? (emit.circulatingSupply / 1e6).toFixed(2) + 'M XLA' : 'N/A';
                 document.getElementById('total').textContent = emit.total ? (emit.total / 1e6).toFixed(2) + 'M XLA' : 'N/A';
                 document.getElementById('updated').textContent = new Date().toLocaleString();
-
                 updateCalc();
             } catch (e) { console.error('Fetch error:', e); }
         }
@@ -327,7 +166,6 @@
             let hHs = h * (unit === 'kh' ? 1e3 : unit === 'mh' ? 1e6 : unit === 'gh' ? 1e9 : 1);
             const netH = currentDifficulty / 120;
             const daily = (hHs / netH) * (86400 / 120) * currentReward;
-            
             document.getElementById('dailyReward').textContent = daily.toFixed(4);
             document.getElementById('weeklyReward').textContent = (daily * 7).toFixed(4);
             document.getElementById('monthlyReward').textContent = (daily * 30.5).toFixed(4);
@@ -350,17 +188,35 @@
                     scales: { x:{ticks:{color:'#64748b',maxTicksLimit:8}, grid:{color:'rgba(255,255,255,0.04)'}}, y:{ticks:{color:'#64748b'}, grid:{color:'rgba(255,255,255,0.04)'}} }
                 };
 
-                const makeData = (arr, color) => ({
-                    data: arr, borderColor: color, tension: 0.4, fill: true, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2,
-                    backgroundColor: ctx => { const c = ctx.chart; const g = c.ctx.createLinearGradient(0, c.chartArea.top, 0, c.chartArea.bottom); g.addColorStop(0, color.replace(')',',0.25)')); g.addColorStop(1, 'transparent'); return g; }
+                const createDataset = (dataArr, color) => ({
+                    data: dataArr, borderColor: color,
+                    backgroundColor: (ctx) => {
+                        const chart = ctx.chart;
+                        if (!chart?.chartArea) return 'transparent';
+                        const g = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom);
+                        g.addColorStop(0, color + '3D'); // ~24% opacity
+                        g.addColorStop(1, 'transparent');
+                        return g;
+                    },
+                    tension: 0.4, fill: true, pointRadius: 0, pointHoverRadius: 6, borderWidth: 2
                 });
 
                 if(difficultyChart) difficultyChart.destroy();
                 if(hashrateChart) hashrateChart.destroy();
 
-                difficultyChart = new Chart(document.getElementById('difficultyChart'), { type:'line', data:{labels, datasets:[makeData(diffs, '#3b82f6')]}, options:baseOpts });
-                hashrateChart = new Chart(document.getElementById('hashrateChart'), { type:'line', data:{labels, datasets:[makeData(hashs, '#10b981')]}, options:baseOpts });
-            } catch(e) { console.warn('History not ready'); }
+                // ✅ FIX: добавлен ключ `data:` и безопасная инициализация
+                difficultyChart = new Chart(document.getElementById('difficultyChart'), {
+                    type: 'line',
+                    data: { labels, datasets: [createDataset(diffs, '#3b82f6')] },
+                    options: baseOpts
+                });
+
+                hashrateChart = new Chart(document.getElementById('hashrateChart'), {
+                    type: 'line',
+                    data: { labels, datasets: [createDataset(hashs, '#10b981')] },
+                    options: baseOpts
+                });
+            } catch(e) { console.warn('History not ready:', e); }
         }
 
         async function loadBlocks() {
@@ -384,7 +240,6 @@
         }
 
         ['hashrateInput','hashrateUnit'].forEach(id => document.getElementById(id).addEventListener('input', updateCalc));
-
         fetchStats(); loadHistory(); loadBlocks();
         setInterval(fetchStats, 600000);
         setInterval(loadHistory, 600000);

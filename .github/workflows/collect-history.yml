@@ -10,32 +10,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
       
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
         
-      - name: Fetch pool stats
+      - name: Fetch and save data
         run: |
-          curl -s https://pool.scalaproject.io/api/stats > /tmp/pool.json
-          jq '.' /tmp/pool.json > docs/current.json
+          # Fetch pool stats
+          curl -s https://pool.scalaproject.io/api/stats > docs/current.json
           
-      - name: Fetch emission data
-        run: |
+          # Fetch emission
           curl -s https://emission.scala.network/ > /tmp/emission.html
-          
           HEIGHT=$(grep -oP 'height["'\'']?\s*:\s*\K\d+' /tmp/emission.html | head -1)
           TOTAL=$(grep -oP 'total["'\'']?\s*:\s*\K\d+' /tmp/emission.html | head -1)
           CIRC=$(grep -oP 'circulatingSupply["'\'']?\s*:\s*\K\d+' /tmp/emission.html | head -1)
-          
           echo "{\"height\": ${HEIGHT:-0}, \"total\": ${TOTAL:-0}, \"circulatingSupply\": ${CIRC:-0}}" > docs/emission.json
           
-      - name: Update history
-        run: |
+          # Update history
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          DIFFICULTY=$(jq '.network.difficulty' /tmp/pool.json)
-          HEIGHT=$(jq '.network.height' /tmp/pool.json)
+          DIFFICULTY=$(jq '.network.difficulty' docs/current.json)
+          HEIGHT=$(jq '.network.height' docs/current.json)
           
           mkdir -p data
           if [ -f data/history.json ]; then
@@ -48,10 +42,9 @@ jobs:
           mv data/tmp.json data/history.json
           
       - name: Commit and push
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://post-hum:${{ secrets.PAT_TOKEN }}@github.com/post-hum/scala-network-status.git
-          git add docs/current.json docs/emission.json data/history.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update network data [skip ci]"
-          git push origin main
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update network data [skip ci]"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"

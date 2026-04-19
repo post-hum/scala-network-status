@@ -1,21 +1,21 @@
 let difficultyChart = null;
 let hashrateChart = null;
+let currentDifficulty = 0;
 
 async function fetchCurrentStats() {
     try {
-        // Читаем данные из локальных JSON файлов (без CORS)
         const poolRes = await fetch('current.json');
         const poolData = await poolRes.json();
         
         const emissionRes = await fetch('emission.json');
         const emissionData = await emissionRes.json();
         
-        // Данные из pool.scalaproject.io
         const height = poolData.network?.height || emissionData.height || 'N/A';
-        const difficulty = poolData.network?.difficulty ? (poolData.network.difficulty / 1e9).toFixed(2) + ' G' : 'N/A';
-        const hashrate = poolData.network?.difficulty ? ((poolData.network.difficulty / 120) / 1e6).toFixed(2) + ' MH/s' : 'N/A';
+        const difficultyRaw = poolData.network?.difficulty || 0;
+        currentDifficulty = difficultyRaw;
+        const difficulty = difficultyRaw ? (difficultyRaw / 1e9).toFixed(2) + ' G' : 'N/A';
+        const hashrate = difficultyRaw ? ((difficultyRaw / 120) / 1e6).toFixed(2) + ' MH/s' : 'N/A';
         
-        // Данные эмиссии
         const circulating = emissionData.circulatingSupply ? (emissionData.circulatingSupply / 1e6).toFixed(2) + 'M XLA' : 'N/A';
         const totalSupply = emissionData.total ? (emissionData.total / 1e6).toFixed(2) + 'M XLA' : 'N/A';
         
@@ -26,10 +26,47 @@ async function fetchCurrentStats() {
         document.getElementById('total').innerText = totalSupply;
         document.getElementById('updated').innerText = new Date().toLocaleString();
         
+        // Update calculator when difficulty changes
+        updateCalculator();
+        
     } catch (err) {
         console.error('Stats fetch error:', err);
         document.getElementById('height').innerText = 'Loading...';
     }
+}
+
+function updateCalculator() {
+    if (!currentDifficulty) return;
+    
+    // Get user hashrate in H/s
+    let hashrateInput = parseFloat(document.getElementById('hashrateInput').value);
+    const unit = document.getElementById('hashrateUnit').value;
+    
+    if (isNaN(hashrateInput)) hashrateInput = 0;
+    
+    let hashrateHs = hashrateInput;
+    if (unit === 'kh') hashrateHs = hashrateInput * 1000;
+    if (unit === 'mh') hashrateHs = hashrateInput * 1000000;
+    
+    // Block reward (currently ~138.5 XLA per block)
+    const blockReward = 138.5;
+    // Seconds per block (target 120 seconds)
+    const secondsPerBlock = 120;
+    // Blocks per day
+    const blocksPerDay = 86400 / secondsPerBlock;
+    // Total network hashrate in H/s
+    const networkHashrate = (currentDifficulty / 120);
+    
+    if (networkHashrate === 0) return;
+    
+    // User's share of network
+    const userShare = hashrateHs / networkHashrate;
+    // Daily reward in XLA
+    const dailyReward = userShare * blocksPerDay * blockReward;
+    
+    document.getElementById('dailyReward').innerText = dailyReward.toFixed(4);
+    document.getElementById('weeklyReward').innerText = (dailyReward * 7).toFixed(4);
+    document.getElementById('monthlyReward').innerText = (dailyReward * 30.5).toFixed(4);
 }
 
 async function loadHistory() {
@@ -43,9 +80,12 @@ async function loadHistory() {
             return;
         }
         
-        const timestamps = history.map(h => new Date(h.timestamp).toLocaleDateString());
-        const difficulties = history.map(h => h.difficulty / 1e9);
-        const hashrates = history.map(h => (h.difficulty / 120) / 1e6);
+        const timestamps = history.map(h => {
+            const date = new Date(h.timestamp);
+            return date.toLocaleDateString();
+        });
+        const difficulties = history.map(h => parseFloat(h.difficulty) / 1e9);
+        const hashrates = history.map(h => (parseFloat(h.difficulty) / 120) / 1e6);
         
         if (difficultyChart) difficultyChart.destroy();
         if (hashrateChart) hashrateChart.destroy();
@@ -59,16 +99,17 @@ async function loadHistory() {
                     label: 'Difficulty (G)', 
                     data: difficulties, 
                     borderColor: '#3b82f6', 
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.05)',
                     fill: true,
-                    tension: 0.4
+                    tension: 0.3,
+                    pointRadius: 2
                 }] 
             },
             options: { 
                 responsive: true, 
                 maintainAspectRatio: true,
                 plugins: {
-                    legend: { labels: { color: '#e0e0e0' } }
+                    legend: { labels: { color: '#e0e0e0', font: { size: 11 } } }
                 }
             }
         });
@@ -82,16 +123,17 @@ async function loadHistory() {
                     label: 'Network Hashrate (MH/s)', 
                     data: hashrates, 
                     borderColor: '#10b981', 
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.05)',
                     fill: true,
-                    tension: 0.4
+                    tension: 0.3,
+                    pointRadius: 2
                 }] 
             },
             options: { 
                 responsive: true, 
                 maintainAspectRatio: true,
                 plugins: {
-                    legend: { labels: { color: '#e0e0e0' } }
+                    legend: { labels: { color: '#e0e0e0', font: { size: 11 } } }
                 }
             }
         });
@@ -100,10 +142,19 @@ async function loadHistory() {
     }
 }
 
-// Запускаем загрузку
+// Event listeners for calculator
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = ['hashrateInput', 'hashrateUnit'];
+    inputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', updateCalculator);
+    });
+});
+
+// Initialize
 fetchCurrentStats();
 loadHistory();
 
-// Обновляем каждую минуту
+// Update every 60 seconds
 setInterval(fetchCurrentStats, 60000);
 setInterval(loadHistory, 300000);

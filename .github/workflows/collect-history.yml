@@ -1,8 +1,8 @@
-name: Collect XLA Network History
+name: Collect XLA Network Data
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '*/10 * * * *'  # каждые 10 минут
   workflow_dispatch:
 
 jobs:
@@ -16,13 +16,24 @@ jobs:
         
       - name: Fetch pool stats
         run: |
-          curl -s https://pool.scalaproject.io/api/stats > /tmp/pool_stats.json
+          curl -s https://pool.scalaproject.io/api/stats > /tmp/pool.json
+          jq '.' /tmp/pool.json > docs/current.json
           
-      - name: Parse and save history
+      - name: Fetch emission data
+        run: |
+          curl -s https://emission.scala.network/ > /tmp/emission.html
+          
+          HEIGHT=$(grep -oP 'height["'\'']?\s*:\s*\K\d+' /tmp/emission.html | head -1)
+          TOTAL=$(grep -oP 'total["'\'']?\s*:\s*\K\d+' /tmp/emission.html | head -1)
+          CIRC=$(grep -oP 'circulatingSupply["'\'']?\s*:\s*\K\d+' /tmp/emission.html | head -1)
+          
+          echo "{\"height\": ${HEIGHT:-0}, \"total\": ${TOTAL:-0}, \"circulatingSupply\": ${CIRC:-0}}" > docs/emission.json
+          
+      - name: Update history
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          DIFFICULTY=$(jq '.network.difficulty' /tmp/pool_stats.json)
-          HEIGHT=$(jq '.network.height' /tmp/pool_stats.json)
+          DIFFICULTY=$(jq '.network.difficulty' /tmp/pool.json)
+          HEIGHT=$(jq '.network.height' /tmp/pool.json)
           
           mkdir -p data
           if [ -f data/history.json ]; then
@@ -38,6 +49,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/history.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update network history"
+          git add docs/current.json docs/emission.json data/history.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update network data [skip ci]"
           git push

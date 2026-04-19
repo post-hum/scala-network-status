@@ -10,11 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
       
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
         
-      - name: Fetch and save data
+      - name: Fetch and process data
         run: |
           # Fetch pool stats
           curl -s https://pool.scalaproject.io/api/stats > docs/current.json
@@ -42,9 +44,9 @@ jobs:
           mv data/tmp.json data/history.json
           
       - name: Commit and push
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update network data [skip ci]"
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+        run: |
+          git config user.name "post-hum"
+          git config user.email "qw8245666@gmail.com"
+          git add docs/current.json docs/emission.json data/history.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update network data [skip ci]"
+          git push https://post-hum:${{ secrets.PAT_TOKEN }}@github.com/post-hum/scala-network-status.git main

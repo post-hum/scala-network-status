@@ -32,6 +32,3 @@ Real-time network monitoring for Scala cryptocurrency.
 - GitHub Pages for hosting
 - Chart.js for graphs
 - Pure HTML/CSS/JS, no dependencies
-
----
-Maintained by [post-hum](https://github.com/post-hum)

@@ -26,7 +26,6 @@ async function fetchCurrentStats() {
         document.getElementById('total').innerText = totalSupply;
         document.getElementById('updated').innerText = new Date().toLocaleString();
         
-        // Update calculator when difficulty changes
         updateCalculator();
         
     } catch (err) {
@@ -38,7 +37,6 @@ async function fetchCurrentStats() {
 function updateCalculator() {
     if (!currentDifficulty) return;
     
-    // Get user hashrate in H/s
     let hashrateInput = parseFloat(document.getElementById('hashrateInput').value);
     const unit = document.getElementById('hashrateUnit').value;
     
@@ -48,20 +46,14 @@ function updateCalculator() {
     if (unit === 'kh') hashrateHs = hashrateInput * 1000;
     if (unit === 'mh') hashrateHs = hashrateInput * 1000000;
     
-    // Block reward (currently ~138.5 XLA per block)
     const blockReward = 138.5;
-    // Seconds per block (target 120 seconds)
     const secondsPerBlock = 120;
-    // Blocks per day
     const blocksPerDay = 86400 / secondsPerBlock;
-    // Total network hashrate in H/s
-    const networkHashrate = (currentDifficulty / 120);
+    const networkHashrate = currentDifficulty / 120;
     
     if (networkHashrate === 0) return;
     
-    // User's share of network
     const userShare = hashrateHs / networkHashrate;
-    // Daily reward in XLA
     const dailyReward = userShare * blocksPerDay * blockReward;
     
     document.getElementById('dailyReward').innerText = dailyReward.toFixed(4);
@@ -142,7 +134,6 @@ async function loadHistory() {
     }
 }
 
-// Event listeners for calculator
 document.addEventListener('DOMContentLoaded', () => {
     const inputs = ['hashrateInput', 'hashrateUnit'];
     inputs.forEach(id => {
@@ -151,10 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Initialize
 fetchCurrentStats();
 loadHistory();
-
-// Update every 60 seconds
 setInterval(fetchCurrentStats, 60000);
 setInterval(loadHistory, 300000);

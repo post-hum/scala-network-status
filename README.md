@@ -33,5 +33,5 @@ Real-time network monitoring for Scala cryptocurrency.
 - Chart.js for graphs
 - Pure HTML/CSS/JS, no dependencies
 
-##Donate XLA:
+## Donate XLA:
 `SvkFweFR7GeAGus6pt7jpg5ZYEvZgqjaUEnYnkqqBRQg57LUuKCMY849e79oVsmDbH9jYH5BVyLJMSweBAQ6YdPB1ekUGaPwc`
